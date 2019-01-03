@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: shiro
+  profiles:
+    active: test
+
+
+#test
+---
+spring:
+  profiles: test
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/shiro
+    username: 'root'
+    password: '@Xing886372'
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
