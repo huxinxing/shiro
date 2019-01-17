@@ -1,7 +1,9 @@
 package com.security.demo.shiro;
 
 import com.security.demo.domain.entity.UserAccountInfo;
+import com.security.demo.domain.entity.UserRoleInfo;
 import com.security.demo.domain.repository.UserAccountInfoRepository;
+import com.security.demo.domain.repository.UserRoleInfoRepository;
 import com.security.demo.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -17,10 +19,15 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 public class MyRealm extends AuthorizingRealm {
 
     @Autowired
     UserAccountInfoRepository userAccountInfoRepository;
+
+    @Autowired
+    UserRoleInfoRepository userRoleInfoRepository;
 
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -29,9 +36,9 @@ public class MyRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        String username = JwtUtil.getUsername(principals.toString());
-      // SysUser user = sysUserService.findByUserName(username);
+        UserAccountInfo userAccountInfo = (UserAccountInfo)principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.addRole("admin");
         return simpleAuthorizationInfo;
 
     }
@@ -46,7 +53,6 @@ public class MyRealm extends AuthorizingRealm {
             throw new AuthenticationException("token无效");
         }
 
-
         UserAccountInfo userAccountInfo = userAccountInfoRepository.findByDisplayName(username);
         if (ObjectUtils.isEmpty(userAccountInfo)) {
             throw new AuthenticationException("用户不存在!");
@@ -56,7 +62,7 @@ public class MyRealm extends AuthorizingRealm {
             throw new AuthenticationException("用户名或密码错误");
         }
 
-        return new SimpleAuthenticationInfo(username, token, "my_realm");
+        return new SimpleAuthenticationInfo(userAccountInfo, token, "my_realm");
 
     }
 }

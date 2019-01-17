@@ -60,14 +60,22 @@ public class AccountService {
         if (userAccountInfo.getSecurityPassword().equals(PasswordUtil.MD5Salt(loginPass,userAccountInfo.getSalt()))){
             String token = JwtUtil.sign(loginName,PasswordUtil.MD5Salt(loginPass,userAccountInfo.getSalt()));
             SecurityUtils.getSubject().login(new JwtToken(token));
-            SecurityManager securityManager = SecurityUtils.getSecurityManager();
-            Subject subject = SecurityUtils.getSubject();
-            Session session = subject.getSession();
+//            SecurityManager securityManager = SecurityUtils.getSecurityManager();
+//            Subject subject = SecurityUtils.getSubject();
+//            Session session = subject.getSession();
 
             return token;
         }else {
             throw new Exception("密码错误");
         }
 
+    }
+
+    /**
+     * 用户退出接口
+     */
+    public void loginOut() throws Exception {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
     }
 }

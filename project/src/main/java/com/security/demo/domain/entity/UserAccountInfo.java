@@ -46,5 +46,4 @@ public class UserAccountInfo {
     @Column(name = "create_time")
     private Timestamp createTime;
 
-
 }
